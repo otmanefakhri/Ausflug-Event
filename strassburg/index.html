@@ -43,12 +43,13 @@ button:focus-visible,.tap:focus-visible{outline:3px solid var(--purple-border);o
 .back{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#fff;font-size:20px;flex-shrink:0;}
 
 .tabbar{background:linear-gradient(180deg,#2d2777,#1b1745);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -6px 20px rgba(10,8,40,.35);display:flex;align-items:center;justify-content:space-around;padding:8px 6px calc(10px + env(safe-area-inset-bottom,0px));flex-shrink:0;}
-.tab{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 12px;border:none;background:none;border-radius:16px;}
+.tab{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 8px;min-width:58px;border:none;background:none;border-radius:16px;}
 .tab .ti{font-size:22px;line-height:1;filter:grayscale(1) brightness(1.6);opacity:.55;}
 .tab.active{background:rgba(255,255,255,.12);}
 .tab.active .ti{filter:none;opacity:1;}
 .tab span:last-child{font-size:10px;color:rgba(255,255,255,.6);font-weight:700;}
 .tab.active span:last-child{color:#FAC775;}
+.tab-menu .ti{filter:none;opacity:.75;color:#fff;font-size:22px;font-weight:700;}
 
 .section-label{font-size:11px;font-weight:800;color:var(--purple-dark);text-transform:uppercase;letter-spacing:1.2px;margin:4px 0 10px;}
 .card{background:var(--white);border-radius:20px;padding:18px;border:.5px solid var(--border);margin-bottom:12px;}
@@ -233,6 +234,42 @@ html,body{background:#1b1745;}
 .legal a{color:var(--purple-dark);font-weight:700;text-decoration:none;}
 
 .flag{display:block;width:58%;height:auto;border-radius:5px;border:1.5px solid #d6d2ee;box-shadow:0 2px 6px rgba(30,26,60,.18);}
+
+/* MENÜ */
+.menu-btn{position:absolute;top:calc(22px + env(safe-area-inset-top,0px));right:14px;z-index:150;width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;}
+.menu-btn span{display:block;width:18px;height:2.5px;border-radius:2px;background:#fff;}
+.menu-btn:focus-visible{outline:3px solid #FAC775;outline-offset:2px;}
+.drawer{position:fixed;inset:0;z-index:300;display:flex;justify-content:flex-end;background:rgba(20,17,58,0);pointer-events:none;transition:background .25s;}
+.drawer.open{background:rgba(20,17,58,.55);pointer-events:auto;}
+.drawer-panel{width:82%;max-width:320px;height:100%;background:var(--white);transform:translateX(100%);transition:transform .25s ease-out;display:flex;flex-direction:column;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px));overflow-y:auto;}
+.drawer.open .drawer-panel{transform:none;}
+@media (prefers-reduced-motion:reduce){.drawer,.drawer-panel{transition:none;}}
+.drawer-head{display:flex;align-items:center;gap:12px;padding:4px 4px 16px;border-bottom:.5px solid var(--border);margin-bottom:10px;}
+.drawer-head .flag{width:44px;}
+.drawer-head b{display:block;font-size:15px;font-weight:800;}
+.drawer-head small{font-size:12px;color:var(--muted);}
+.drawer-close{margin-left:auto;width:36px;height:36px;border-radius:50%;border:none;background:var(--bg);font-size:18px;cursor:pointer;color:var(--text);}
+.d-item{display:flex;align-items:center;gap:12px;width:100%;padding:13px 10px;border:none;background:none;border-radius:14px;font-size:15px;font-weight:700;color:var(--text);text-decoration:none;cursor:pointer;text-align:left;}
+.d-item:hover,.d-item:focus-visible{background:var(--bg);}
+.d-item .di{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.d-item.sos{color:#B42318;}
+.d-item.sos .di{background:#FDE7E4;}
+.d-sep{height:.5px;background:var(--border);margin:8px 4px;}
+.d-item.logout-item{color:var(--coral);margin-top:auto;}
+.d-item.logout-item .di{background:var(--coral-light);}
+.sheet.top{z-index:1;}
+#ov-contacts,#ov-sos{z-index:400;}
+.call{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:16px;padding:12px 14px;margin-bottom:8px;text-decoration:none;color:var(--text);}
+.call .ci{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--white);}
+.call .ct{flex:1;min-width:0;}
+.call .ct b{display:block;font-size:14px;font-weight:800;}
+.call .ct small{display:block;font-size:12px;color:var(--muted);line-height:1.35;margin-top:1px;}
+.call .num{font-family:var(--f-display);font-size:22px;color:#B42318;flex-shrink:0;font-variant-numeric:tabular-nums;}
+.call .num.sm{font-family:var(--f-body);font-size:13px;font-weight:800;color:var(--purple-dark);text-align:right;}
+.call.big{background:#FDE7E4;}
+.call.big .num{font-size:30px;}
+.sos-note{font-size:12px;color:var(--muted);line-height:1.5;margin:4px 2px 12px;}
+
 /* SHEET */
 .overlay{position:fixed;inset:0;background:rgba(30,26,60,.6);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
 .overlay.show{display:flex;}
@@ -382,6 +419,54 @@ html,body{background:#1b1745;}
 
 <div class="app">
 
+
+<div class="drawer" id="drawer" onclick="if(event.target===this)closeMenu()" aria-hidden="true">
+  <nav class="drawer-panel" aria-label="Menü">
+    <div class="drawer-head">
+      <svg class="flag" viewBox="0 0 60 40" role="img" aria-label="Flagge von Straßburg"><rect width="60" height="40" fill="#fff"/><polygon points="0,0 13,0 60,31 60,40 47,40 0,9" fill="#D52B1E"/></svg>
+      <div><b>Straßburg 2026</b><small>07.–09. Dezember</small></div>
+      <button class="drawer-close" onclick="closeMenu()" aria-label="Menü schließen">✕</button>
+    </div>
+    <button class="d-item sos" onclick="openSheetFromMenu('ov-sos')"><span class="di">🚨</span>Notruf in Straßburg</button>
+    <button class="d-item" onclick="openSheetFromMenu('ov-contacts')"><span class="di" style="background:var(--teal-light)">📞</span>Kontakte</button>
+    <button class="d-item" onclick="closeMenu();nav('infos')"><span class="di" style="background:var(--amber-light)">ℹ️</span>Infos &amp; Fragen</button>
+    <div class="d-sep"></div>
+    <a class="d-item" href="https://ausflug-programm.de/datenschutz.html" target="_blank" rel="noopener"><span class="di" style="background:var(--purple-light)">🔒</span>Datenschutz</a>
+    <a class="d-item" href="https://ausflug-programm.de/impressum.html" target="_blank" rel="noopener"><span class="di" style="background:var(--purple-light)">📄</span>Impressum</a>
+    <button class="d-item logout-item" onclick="closeMenu();logout()"><span class="di">🚪</span>Abmelden</button>
+  </nav>
+</div>
+
+<div class="overlay" id="ov-sos" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sos-title">
+    <div class="handle"></div>
+    <div class="sh-head"><div class="ic">🚨</div><h2 id="sos-title">Notruf in Straßburg</h2></div>
+    <p class="sos-note">Die Notrufnummern funktionieren in ganz Frankreich kostenlos, auch ohne Guthaben. Sag zuerst, wo du bist: „Je suis à Strasbourg, …“</p>
+    <a class="call big" href="tel:112"><span class="ci">🆘</span><span class="ct"><b>Europäischer Notruf</b><small>Für alle Notfälle, auch auf Englisch</small></span><span class="num">112</span></a>
+    <a class="call" href="tel:15"><span class="ci">🚑</span><span class="ct"><b>Rettungsdienst (SAMU)</b><small>Medizinischer Notfall</small></span><span class="num">15</span></a>
+    <a class="call" href="tel:17"><span class="ci">🚓</span><span class="ct"><b>Polizei</b><small>Diebstahl, Überfall, Gefahr</small></span><span class="num">17</span></a>
+    <a class="call" href="tel:18"><span class="ci">🚒</span><span class="ct"><b>Feuerwehr</b><small>Brand, Unfall, Rettung</small></span><span class="num">18</span></a>
+    <a class="call" href="sms:114"><span class="ci">💬</span><span class="ct"><b>Notruf per SMS</b><small>Für Menschen, die nicht telefonieren können</small></span><span class="num">114</span></a>
+    <a class="call" href="tel:+49116116"><span class="ci">💳</span><span class="ct"><b>Karte gesperrt?</b><small>Sperr-Notruf für deutsche Bank- und Kreditkarten</small></span><span class="num sm">+49 116 116</span></a>
+    <div class="fact-row" style="margin-top:6px;"><h4>Treffpunkt im Notfall</h4><p>Vor dem Haupteingang des Münsters, Place de la Cathédrale. Und bitte immer die Reiseleitung informieren.</p></div>
+    <button class="btn" onclick="document.getElementById('ov-sos').classList.remove('show')">Schließen ✓</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-contacts" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ct-title">
+    <div class="handle"></div>
+    <div class="sh-head"><div class="ic">📞</div><h2 id="ct-title">Kontakte</h2></div>
+    <div class="call"><span class="ci">🧭</span><span class="ct"><b>Reiseleitung</b><small>Name und Handynummer folgen vor der Reise</small></span></div>
+    <div class="call"><span class="ci">🏨</span><span class="ct"><b>Hotel</b><small>Hotel in der Altstadt (Grande Île) – Name und Telefon folgen</small></span></div>
+    <a class="call" href="tel:+33388246700"><span class="ci">🇩🇪</span><span class="ct"><b>Deutsches Generalkonsulat</b><small>6 Quai Mullenheim, 67000 Strasbourg</small></span><span class="num sm">+33 3 88 24 67 00</span></a>
+    <a class="call" href="tel:+33611762255"><span class="ci">🛂</span><span class="ct"><b>Konsularischer Notfall</b><small>Außerhalb der Öffnungszeiten, z. B. Pass verloren</small></span><span class="num sm">+33 6 11 76 22 55</span></a>
+    <div class="call"><span class="ci">💊</span><span class="ct"><b>Apotheke</b><small>Grünes Kreuz an der Tür. Notdienst-Apotheken stehen im Aushang jeder Apotheke.</small></span></div>
+    <button class="btn" onclick="document.getElementById('ov-contacts').classList.remove('show')">Schließen ✓</button>
+  </div>
+</div>
+
+
 <!-- START -->
 <div class="screen active" id="s-home">
   <div class="scroll">
@@ -499,8 +584,7 @@ html,body{background:#1b1745;}
       <details class="faq"><summary>Kostet mein Handy im Ausland extra?</summary><p>Innerhalb der EU telefonierst und surfst du in der Regel zu deinem normalen Tarif.</p></details>
       <details class="faq"><summary>Spricht man dort Deutsch?</summary><p>Amtssprache ist Französisch, aber in Hotels, Restaurants und auf dem Markt kommt man oft auch mit Deutsch weiter.</p></details>
       <details class="faq"><summary>Was ist, wenn ich mich verlaufe?</summary><p>Die Altstadt ist klein und von der Ill umflossen. Ruf die Reiseleitung an oder geh zum Münster – dort treffen wir uns im Notfall.</p></details>
-      <button class="logout" onclick="logout()">Abmelden</button>
-      <p class="legal"><a href="https://ausflug-programm.de/impressum.html" target="_blank" rel="noopener">Impressum</a> · <a href="https://ausflug-programm.de/datenschutz.html" target="_blank" rel="noopener">Datenschutz</a></p>
+            <p class="legal"><a href="https://ausflug-programm.de/impressum.html" target="_blank" rel="noopener">Impressum</a> · <a href="https://ausflug-programm.de/datenschutz.html" target="_blank" rel="noopener">Datenschutz</a></p>
     </div>
   </div>
   <nav class="tabbar" data-tabs></nav>
@@ -621,7 +705,7 @@ function buildTabs(){
     var screen = bar.closest('.screen').id.replace('s-','');
     bar.innerHTML = TABS.map(function(t){
       return '<button class="tab'+(t[0]===screen?' active':'')+'" onclick="nav(\''+t[0]+'\')"><span class="ti">'+t[1]+'</span><span>'+t[2]+'</span></button>';
-    }).join('');
+    }).join('') + '<button class="tab tab-menu" onclick="openMenu()" aria-label="Menü öffnen" aria-haspopup="true"><span class="ti">☰</span><span>Menü</span></button>';
   });
 }
 
@@ -814,6 +898,13 @@ document.getElementById('login-form').addEventListener('submit',function(e){
   });
 });
 if(!isLoggedIn()) showLogin();
+
+
+/* MENÜ */
+function openMenu(){var d=document.getElementById('drawer');d.classList.add('open');d.setAttribute('aria-hidden','false');}
+function closeMenu(){var d=document.getElementById('drawer');d.classList.remove('open');d.setAttribute('aria-hidden','true');}
+function openSheetFromMenu(id){closeMenu();document.getElementById(id).classList.add('show');}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeMenu();['ov-sos','ov-contacts'].forEach(function(id){document.getElementById(id).classList.remove('show');});}});
 
 /* INIT */
 document.querySelectorAll('.hero,.topbar').forEach(function(el){
