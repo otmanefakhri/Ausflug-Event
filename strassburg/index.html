@@ -42,8 +42,8 @@ button:focus-visible,.tap:focus-visible{outline:3px solid var(--purple-border);o
 .topbar .sub{color:rgba(255,255,255,.85);font-size:13px;margin-top:6px;}
 .back{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#fff;font-size:20px;flex-shrink:0;}
 
-.tabbar{background:linear-gradient(180deg,#2d2777,#1b1745);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -6px 20px rgba(10,8,40,.35);display:flex;align-items:center;justify-content:space-around;padding:8px 6px calc(10px + env(safe-area-inset-bottom,0px));flex-shrink:0;}
-.tab{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 8px;min-width:58px;border:none;background:none;border-radius:16px;}
+.tabbar{background:linear-gradient(180deg,#2d2777,#1b1745);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -6px 20px rgba(10,8,40,.35);display:flex;align-items:center;justify-content:space-around;padding:6px 6px max(6px, calc(env(safe-area-inset-bottom,0px) - 12px));flex-shrink:0;}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 8px;min-width:58px;border:none;background:none;border-radius:16px;}
 .tab .ti{font-size:22px;line-height:1;filter:grayscale(1) brightness(1.6);opacity:.55;}
 .tab.active{background:rgba(255,255,255,.12);}
 .tab.active .ti{filter:none;opacity:1;}
@@ -287,6 +287,7 @@ html,body{background:#1b1745;}
 .fact-row ul{padding-left:18px;font-size:14px;line-height:1.6;}
 </style>
 <style>.topbar{padding-top:calc(28px + env(safe-area-inset-top,0px))}.hero{padding-top:calc(30px + env(safe-area-inset-top,0px))}</style>
+<style>.app{position:fixed;top:0;bottom:0;left:0;right:0;height:auto;margin:0 auto;}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
