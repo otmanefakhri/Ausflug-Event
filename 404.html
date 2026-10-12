@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex"><title>Seite nicht gefunden</title>
+<script>
+// Groß-/Kleinschreibung egal: /Strassburg, /STRASSBURG, /straßburg -> /strassburg/
+(function(){
+  var p=decodeURIComponent(location.pathname).toLowerCase().replace(/ß/g,'ss');
+  if(!/\/$/.test(p) && !/\.[a-z0-9]+$/.test(p)) p+='/';
+  if(p!==location.pathname) location.replace(p+location.search+location.hash);
+})();
+</script>
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1b1745;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:24px}a{color:#FAC775;font-weight:700}</style>
+</head><body><div><div style="font-size:48px">🧭</div><h1 style="font-size:22px;margin:12px 0 6px">Seite nicht gefunden</h1><p>Hier geht's zurück zur <a href="/">Übersicht aller Ausflüge</a>.</p></div></body></html>

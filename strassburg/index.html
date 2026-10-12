@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Straßburg">
+<meta name="theme-color" content="#1b1745">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 60 40%27%3E%3Crect width=%2760%27 height=%2740%27 fill=%27%23fff%27 stroke=%27%23ccc%27 stroke-width=%272%27/%3E%3Cpolygon points=%270,0 13,0 60,31 60,40 47,40 0,9%27 fill=%27%23D52B1E%27/%3E%3C/svg%3E">
+<title>Ausflugs-App Straßburg</title>
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: Handy-App wie ChemiKids – Hero, Kartenmenü, Bottom-Sheets, Tabbar. Bewusst ein helles Erscheinungsbild. */
+:root{
+  --purple:#7F77DD;--purple-dark:#534AB7;--purple-darker:#3C3489;--purple-light:#EEEDFE;--purple-border:#AFA9EC;
+  --teal:#1D9E75;--teal-dark:#085041;--teal-light:#E1F5EE;--teal-border:#5DCAA5;
+  --coral:#D85A30;--coral-dark:#4A1B0C;--coral-light:#FAECE7;--coral-border:#F0997B;
+  --amber:#BA7517;--amber-dark:#412402;--amber-light:#FAEEDA;--amber-border:#FAC775;
+  --wine:#8E2C48;--wine-light:#F8E6EC;
+  --bg:#f0eeff;--white:#ffffff;--text:#1e1a3c;--muted:#5d6478;--border:#e2deff;
+  --f-display:'Fredoka One','Arial Rounded MT Bold',system-ui,sans-serif;
+  --f-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);font-family:var(--f-body);color:var(--text);overflow:hidden;}
+button{font-family:var(--f-body);}
+button:focus-visible,.tap:focus-visible{outline:3px solid var(--purple-border);outline-offset:2px;}
+.app{max-width:430px;height:100%;margin:0 auto;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden;}
+.screen{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
+.screen.active{display:flex;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;}
+.scroll::-webkit-scrollbar{display:none;}
+.pad{padding:18px 16px 24px;}
+
+.topbar{background:linear-gradient(160deg,var(--purple),var(--purple-dark));padding:28px 20px 18px;flex-shrink:0;}
+.topbar-row{display:flex;align-items:center;gap:10px;}
+.topbar h1{font-family:var(--f-display);font-size:22px;color:#fff;flex:1;font-weight:400;}
+.topbar .sub{color:rgba(255,255,255,.85);font-size:13px;margin-top:6px;}
+.back{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#fff;font-size:20px;flex-shrink:0;}
+
+.tabbar{background:linear-gradient(180deg,#2d2777,#1b1745);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -6px 20px rgba(10,8,40,.35);display:flex;align-items:center;justify-content:space-around;padding:8px 6px calc(10px + env(safe-area-inset-bottom,0px));flex-shrink:0;}
+.tab{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 12px;border:none;background:none;border-radius:16px;}
+.tab .ti{font-size:22px;line-height:1;filter:grayscale(1) brightness(1.6);opacity:.55;}
+.tab.active{background:rgba(255,255,255,.12);}
+.tab.active .ti{filter:none;opacity:1;}
+.tab span:last-child{font-size:10px;color:rgba(255,255,255,.6);font-weight:700;}
+.tab.active span:last-child{color:#FAC775;}
+
+.section-label{font-size:11px;font-weight:800;color:var(--purple-dark);text-transform:uppercase;letter-spacing:1.2px;margin:4px 0 10px;}
+.card{background:var(--white);border-radius:20px;padding:18px;border:.5px solid var(--border);margin-bottom:12px;}
+.demo-tag{display:inline-block;background:var(--amber-light);color:var(--amber-dark);border:.5px solid var(--amber-border);font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:50px;}
+
+/* HOME */
+.hero{background:linear-gradient(160deg,var(--purple),var(--purple-dark),var(--purple-darker));padding:30px 24px 26px;text-align:center;flex-shrink:0;}
+.mascot{width:84px;height:84px;background:#fff;border-radius:50%;margin:10px auto 12px;display:flex;align-items:center;justify-content:center;font-size:44px;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+@media (prefers-reduced-motion:reduce){.mascot{animation:none;}}
+.hero h1{font-family:var(--f-display);font-weight:400;font-size:28px;color:#fff;text-wrap:balance;line-height:1.15;}
+.hero p{font-size:14px;color:rgba(255,255,255,.88);margin-top:6px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:50px;padding:7px 14px;color:var(--purple-darker);font-size:13px;font-weight:800;box-shadow:0 3px 10px rgba(10,8,40,.35);text-shadow:none;}
+
+.now{background:linear-gradient(135deg,#FAC775,#EF9F27);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:18px;cursor:pointer;border:none;width:100%;text-align:left;}
+.now-icon{width:52px;height:52px;background:rgba(255,255,255,.35);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.now small{display:block;font-size:11px;font-weight:800;color:#633806;text-transform:uppercase;letter-spacing:1px;}
+.now h3{font-size:15px;font-weight:800;color:var(--amber-dark);margin-top:2px;}
+.now p{font-size:12px;color:#633806;margin-top:2px;line-height:1.4;}
+
+.sim{margin-bottom:20px;}
+.sim-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.sim-row b{font-size:13px;}
+.sim-time{font-family:var(--f-display);font-size:20px;color:var(--purple-dark);font-variant-numeric:tabular-nums;}
+.sim input{width:100%;accent-color:var(--purple);}
+.sim p{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4;}
+
+.pills{display:flex;gap:8px;margin-bottom:12px;}
+.pill{flex:1;padding:8px 6px;border-radius:50px;font-size:12px;font-weight:800;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);text-align:center;line-height:1.2;}
+.pill small{display:block;font-size:10px;font-weight:700;opacity:.8;}
+.pill.active{background:var(--purple);color:#fff;border-color:var(--purple);}
+
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.menu-card{border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px;cursor:pointer;border:.5px solid transparent;text-align:left;}
+.menu-card .ci{font-size:28px;}
+.menu-card h3{font-size:14px;font-weight:800;}
+.menu-card p{font-size:11px;line-height:1.4;}
+.mc-purple{background:var(--purple-light);border-color:var(--purple-border);}
+.mc-purple h3{color:var(--purple-darker);}.mc-purple p{color:var(--purple-dark);}
+.mc-teal{background:var(--teal-light);border-color:var(--teal-border);}
+.mc-teal h3{color:var(--teal-dark);}.mc-teal p{color:var(--teal);}
+.mc-coral{background:var(--coral-light);border-color:var(--coral-border);}
+.mc-coral h3{color:var(--coral-dark);}.mc-coral p{color:var(--coral);}
+.mc-amber{background:var(--amber-light);border-color:var(--amber-border);}
+.mc-amber h3{color:var(--amber-dark);}.mc-amber p{color:var(--amber);}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.stat{background:var(--bg);border-radius:14px;padding:10px 6px;text-align:center;}
+.stat b{display:block;font-family:var(--f-display);font-weight:400;font-size:20px;color:var(--purple-darker);font-variant-numeric:tabular-nums;}
+.stat span{font-size:10px;color:var(--muted);font-weight:700;}
+
+.hl-list{display:flex;flex-direction:column;gap:10px;}
+.hl{display:flex;align-items:center;gap:12px;width:100%;background:var(--white);border:.5px solid var(--border);border-radius:18px;padding:12px 14px;cursor:pointer;text-align:left;}
+.hl-ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.hl-txt{flex:1;min-width:0;}
+.hl-txt b{display:block;font-size:14px;font-weight:800;color:var(--text);}
+.hl-txt small{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35;}
+.hl-day{flex-shrink:0;background:var(--purple-light);color:var(--purple-darker);font-size:11px;font-weight:800;padding:4px 10px;border-radius:50px;}
+
+.cd{background:linear-gradient(160deg,var(--purple),var(--purple-dark),var(--purple-darker));border-radius:22px;padding:18px 16px 16px;margin-bottom:20px;color:#fff;}
+.cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.cd-box{background:rgba(255,255,255,.14);border-radius:16px;padding:12px 4px 10px;text-align:center;}
+.cd-box b{display:block;font-family:var(--f-display);font-weight:400;font-size:30px;line-height:1;font-variant-numeric:tabular-nums;}
+.cd-box span{display:block;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;opacity:.85;margin-top:6px;}
+.cd-note{font-size:12px;font-weight:700;text-align:center;margin-top:12px;color:rgba(255,255,255,.9);line-height:1.4;}
+.cd-big{font-family:var(--f-display);font-size:28px;text-align:center;}
+
+/* PROGRAMM / TIMELINE */
+.day-bar{padding:12px 16px 0;flex-shrink:0;}
+.day-title{font-size:13px;color:var(--muted);font-weight:700;margin:2px 0 0;}
+.tl{position:relative;padding:14px 16px 24px 16px;}
+.tl-item{display:grid;grid-template-columns:52px 22px 1fr;gap:0 10px;cursor:pointer;}
+.tl-time{font-size:14px;font-weight:800;color:var(--purple-darker);padding-top:16px;text-align:right;font-variant-numeric:tabular-nums;}
+.tl-rail{position:relative;display:flex;justify-content:center;}
+.tl-rail::before{content:"";position:absolute;top:0;bottom:0;width:3px;background:var(--border);border-radius:3px;}
+.tl-item:first-child .tl-rail::before{top:20px;}
+.tl-item:last-child .tl-rail::before{bottom:calc(100% - 22px);}
+.tl-dot{position:relative;margin-top:16px;width:16px;height:16px;border-radius:50%;background:var(--white);border:3px solid var(--purple-border);z-index:1;}
+.tl-card{border-radius:18px;padding:14px;margin-bottom:12px;border:.5px solid var(--border);background:var(--white);display:flex;gap:12px;align-items:flex-start;min-width:0;}
+.tl-ic{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.tl-card h3{font-size:15px;font-weight:800;}
+.tl-card p{font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px;}
+.tl-card .arrow{margin-left:auto;color:var(--muted);font-size:20px;align-self:center;}
+.tl-item.done .tl-dot{background:var(--teal-border);border-color:var(--teal-border);}
+.tl-item.done .tl-card{opacity:.6;}
+.tl-item.done .tl-rail::before{background:var(--teal-border);}
+.tl-item.current .tl-dot{background:var(--purple);border-color:var(--purple-light);box-shadow:0 0 0 4px var(--purple-border);}
+.tl-item.current .tl-card{border:1.5px solid var(--purple);box-shadow:0 6px 18px rgba(83,74,183,.15);}
+.badge-now{display:inline-block;background:var(--purple);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:50px;margin-left:6px;vertical-align:2px;}
+
+/* PACKLISTE */
+.progress-bg{background:var(--border);border-radius:50px;height:8px;overflow:hidden;margin:8px 0 4px;}
+.progress-fill{background:linear-gradient(90deg,var(--purple),var(--teal-border));height:100%;border-radius:50px;transition:width .3s;}
+.pack-group{margin-bottom:16px;}
+.pack-item{display:flex;align-items:center;gap:12px;background:var(--white);border:.5px solid var(--border);border-radius:16px;padding:12px 14px;margin-bottom:8px;cursor:pointer;width:100%;text-align:left;}
+.pack-box{width:26px;height:26px;border-radius:8px;border:2px solid var(--purple-border);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;}
+.pack-item .pe{font-size:20px;}
+.pack-item .pt{font-size:14px;font-weight:700;color:var(--text);flex:1;}
+.pack-item .pt small{display:block;font-size:11px;color:var(--muted);font-weight:600;}
+.pack-item.checked{background:var(--teal-light);border-color:var(--teal-border);}
+.pack-item.checked .pack-box{background:var(--teal);border-color:var(--teal);}
+.pack-item.checked .pt{color:var(--teal-dark);text-decoration:line-through;}
+
+/* QUIZ */
+.q-score-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.q-score{font-size:13px;color:var(--muted);font-weight:700;}
+.q-num{font-size:13px;color:var(--purple);font-weight:800;}
+.q-card{background:var(--white);border-radius:24px;padding:22px;margin:12px 0 14px;border:.5px solid var(--border);text-align:center;}
+.q-emoji{font-size:44px;margin-bottom:12px;}
+.q-text{font-size:17px;font-weight:800;line-height:1.4;text-wrap:balance;}
+.ans-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.ans-btn{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:13px 16px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;width:100%;}
+.ans-letter{width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;color:var(--purple);}
+.ans-btn.correct{background:var(--teal-light);border-color:var(--teal-border);color:var(--teal-dark);}
+.ans-btn.wrong{background:var(--coral-light);border-color:var(--coral-border);color:var(--coral-dark);}
+.ans-btn.correct .ans-letter{background:var(--teal-border);color:#fff;}
+.ans-btn.wrong .ans-letter{background:var(--coral-border);color:#fff;}
+.q-explain{background:var(--purple-light);border-radius:14px;padding:12px 14px;font-size:13px;color:var(--purple-darker);line-height:1.5;margin-bottom:12px;}
+.btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));border:none;border-radius:50px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;}
+.q-result{text-align:center;padding:30px 10px;}
+.q-result .big{font-size:68px;}
+.q-result h2{font-family:var(--f-display);font-weight:400;font-size:26px;color:var(--purple);margin-top:6px;}
+.q-result p{font-size:15px;color:var(--muted);font-weight:700;margin:6px 0 20px;}
+
+/* INFOS */
+.info-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid var(--border);}
+.info-row:last-child{border-bottom:none;padding-bottom:0;}
+.info-row:first-child{padding-top:0;}
+.info-row .ie{font-size:22px;width:30px;text-align:center;flex-shrink:0;}
+.info-row h4{font-size:13px;font-weight:800;}
+.info-row p{font-size:13px;color:var(--muted);line-height:1.5;margin-top:2px;}
+.faq{background:var(--white);border:.5px solid var(--border);border-radius:16px;margin-bottom:8px;overflow:hidden;}
+.faq summary{padding:14px;font-size:14px;font-weight:800;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px;}
+.faq summary::-webkit-details-marker{display:none;}
+.faq summary::after{content:"+";color:var(--purple);font-size:18px;line-height:1;}
+.faq[open] summary::after{content:"–";}
+.faq p{padding:0 14px 14px;font-size:13px;color:var(--muted);line-height:1.55;}
+.phrase{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:.5px solid var(--border);font-size:13px;}
+.phrase:last-child{border-bottom:none;padding-bottom:0;}
+.phrase:first-child{padding-top:0;}
+.phrase b{color:var(--purple-darker);}
+.phrase span{color:var(--muted);text-align:right;}
+
+/* WEIHNACHTSMARKT-HINTERGRUND */
+html,body{background:#1b1745;}
+.backdrop{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.backdrop svg{width:100%;height:100%;}
+.app{z-index:1;box-shadow:0 0 40px rgba(0,0,0,.35);}
+.hero,.topbar{position:relative;overflow:hidden;background:#1b1745;}
+.hero{padding-bottom:150px;}
+.scene{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.topbar::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(27,23,69,.82),rgba(27,23,69,.45));}
+.hero>*:not(.scene):not(.snow),.topbar>*:not(.scene):not(.snow){position:relative;z-index:2;}
+.hero h1,.hero p,.topbar h1,.topbar .sub{text-shadow:0 2px 8px rgba(10,8,40,.6);}
+.snow{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background-image:radial-gradient(2px 2px at 20px 30px,#fff 50%,transparent 51%),radial-gradient(2px 2px at 90px 120px,#fff 50%,transparent 51%),radial-gradient(3px 3px at 150px 60px,rgba(255,255,255,.9) 50%,transparent 51%),radial-gradient(2px 2px at 60px 170px,rgba(255,255,255,.8) 50%,transparent 51%),radial-gradient(3px 3px at 180px 180px,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 120px 10px,#fff 50%,transparent 51%);
+  background-size:200px 200px;animation:snow 14s linear infinite;opacity:.85;}
+@keyframes snow{from{background-position:0 0;}to{background-position:40px 200px;}}
+@media (prefers-reduced-motion:reduce){.snow{animation:none;}}
+
+/* LOGIN */
+.login{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:24px 16px;overflow-y:auto;}
+.login .scene{position:fixed;}
+.login-card{position:relative;z-index:2;width:100%;max-width:380px;background:var(--white);border-radius:28px;padding:26px 22px 22px;box-shadow:0 20px 50px rgba(10,8,40,.45);text-align:center;}
+.login-card .mascot{margin:0 auto 12px;width:72px;height:72px;font-size:38px;background:var(--purple-light);}
+.login-card h1{font-family:var(--f-display);font-weight:400;font-size:24px;color:var(--purple-darker);}
+.login-card .lead{font-size:13px;color:var(--muted);margin:4px 0 18px;}
+.field{text-align:left;margin-bottom:12px;}
+.field label{display:block;font-size:11px;font-weight:800;color:var(--purple-dark);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.field input{width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid var(--border);font-family:var(--f-body);font-size:15px;color:var(--text);background:var(--bg);}
+.field input:focus{outline:none;border-color:var(--purple);background:var(--white);}
+.login-err{background:var(--coral-light);color:var(--coral-dark);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:700;margin-bottom:12px;text-align:left;}
+.login-hint{font-size:11px;color:var(--muted);margin-top:14px;line-height:1.45;}
+.login-card.shake{animation:shake .35s;}
+@keyframes shake{25%{transform:translateX(-8px);}50%{transform:translateX(8px);}75%{transform:translateX(-4px);}}
+@media (prefers-reduced-motion:reduce){.login-card.shake{animation:none;}}
+.logout{width:100%;padding:14px;border-radius:50px;border:1.5px solid var(--coral-border);background:var(--white);color:var(--coral);font-size:14px;font-weight:800;cursor:pointer;margin-top:12px;}
+
+
+.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:16px;}
+.legal a{color:var(--purple-dark);font-weight:700;text-decoration:none;}
+
+.flag{display:block;width:58%;height:auto;border-radius:5px;border:1.5px solid #d6d2ee;box-shadow:0 2px 6px rgba(30,26,60,.18);}
+/* SHEET */
+.overlay{position:fixed;inset:0;background:rgba(30,26,60,.6);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
+.overlay.show{display:flex;}
+.sheet{background:var(--white);border-radius:28px 28px 0 0;padding:22px 22px calc(28px + env(safe-area-inset-bottom,0px));width:100%;max-width:430px;max-height:85%;overflow-y:auto;animation:up .25s ease-out;}
+@keyframes up{from{transform:translateY(30px);opacity:.6;}to{transform:none;opacity:1;}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none;}}
+.handle{width:36px;height:4px;background:var(--border);border-radius:50px;margin:0 auto 18px;}
+.sh-head{text-align:center;margin-bottom:16px;}
+.sh-head .ic{font-size:50px;}
+.sh-head .time{display:inline-block;margin-top:8px;background:var(--purple-light);color:var(--purple-darker);font-weight:800;font-size:12px;padding:4px 12px;border-radius:50px;font-variant-numeric:tabular-nums;}
+.sh-head h2{font-size:20px;font-weight:800;margin-top:8px;text-wrap:balance;}
+.fact-row{background:var(--bg);border-radius:16px;padding:14px;margin-bottom:10px;}
+.fact-row h4{font-size:11px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.fact-row p{font-size:14px;line-height:1.55;}
+.fact-row ul{padding-left:18px;font-size:14px;line-height:1.6;}
+</style>
+<style>.topbar{padding-top:calc(28px + env(safe-area-inset-top,0px))}.hero{padding-top:calc(30px + env(safe-area-inset-top,0px))}</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14113a"/><stop offset=".55" stop-color="#2d2777"/><stop offset="1" stop-color="#534AB7"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#FFD98A" stop-opacity=".9"/><stop offset="1" stop-color="#FFD98A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="booth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE3A3"/><stop offset="1" stop-color="#EF9F27"/>
+    </linearGradient>
+  </defs>
+  <symbol id="market" viewBox="0 0 430 300">
+    <rect width="430" height="300" fill="url(#sky)"/>
+    <g fill="#fff">
+      <circle cx="30" cy="25" r="1.2"/><circle cx="80" cy="60" r="1"/><circle cx="140" cy="20" r="1.4"/><circle cx="190" cy="70" r="1"/>
+      <circle cx="300" cy="30" r="1.3"/><circle cx="350" cy="75" r="1"/><circle cx="400" cy="20" r="1.4"/><circle cx="270" cy="95" r="1"/>
+      <circle cx="110" cy="105" r="1"/><circle cx="380" cy="120" r="1.1"/>
+    </g>
+    <circle cx="370" cy="48" r="14" fill="#FFF6DA" opacity=".9"/>
+    <circle cx="376" cy="44" r="13" fill="#232065"/>
+    <!-- Münster -->
+    <g fill="#231f5c">
+      <rect x="200" y="118" width="96" height="150"/>
+      <rect x="203" y="70" width="34" height="60"/>
+      <polygon points="203,72 220,8 237,72"/>
+      <rect x="262" y="96" width="34" height="30"/>
+      <polygon points="248,118 270,96 296,118"/>
+    </g>
+    <circle cx="258" cy="160" r="13" fill="#FAC775" opacity=".55"/>
+    <g fill="#FAC775" opacity=".55">
+      <rect x="213" y="90" width="5" height="16" rx="2.5"/><rect x="223" y="90" width="5" height="16" rx="2.5"/>
+      <rect x="212" y="185" width="8" height="22" rx="4"/><rect x="278" y="185" width="8" height="22" rx="4"/>
+    </g>
+    <!-- Fachwerkhäuser -->
+    <g fill="#2f2a72">
+      <polygon points="0,150 25,122 50,150 50,268 0,268"/>
+      <polygon points="48,165 82,132 116,165 116,268 48,268"/>
+      <polygon points="314,160 348,128 382,160 382,268 314,268"/>
+      <polygon points="380,148 405,120 430,148 430,268 380,268"/>
+    </g>
+    <g fill="#FAC775" opacity=".85">
+      <rect x="12" y="165" width="8" height="10"/><rect x="30" y="165" width="8" height="10"/><rect x="12" y="190" width="8" height="10"/>
+      <rect x="62" y="175" width="9" height="11"/><rect x="92" y="175" width="9" height="11"/><rect x="77" y="150" width="9" height="11"/>
+      <rect x="328" y="172" width="9" height="11"/><rect x="358" y="172" width="9" height="11"/><rect x="343" y="148" width="9" height="11"/>
+      <rect x="392" y="162" width="8" height="10"/><rect x="410" y="162" width="8" height="10"/><rect x="410" y="188" width="8" height="10"/>
+    </g>
+    <!-- Lichterkette -->
+    <path d="M0 118 Q105 168 215 128 Q325 168 430 118" fill="none" stroke="#1a1748" stroke-width="1.2"/>
+    <g fill="#FFD98A">
+      <circle cx="25" cy="128" r="2.4"/><circle cx="55" cy="138" r="2.4"/><circle cx="85" cy="144" r="2.4"/><circle cx="115" cy="146" r="2.4"/>
+      <circle cx="145" cy="143" r="2.4"/><circle cx="175" cy="137" r="2.4"/><circle cx="200" cy="131" r="2.4"/>
+      <circle cx="230" cy="131" r="2.4"/><circle cx="260" cy="139" r="2.4"/><circle cx="290" cy="145" r="2.4"/><circle cx="320" cy="146" r="2.4"/>
+      <circle cx="350" cy="142" r="2.4"/><circle cx="380" cy="135" r="2.4"/><circle cx="410" cy="125" r="2.4"/>
+    </g>
+    <!-- Tannenbaum -->
+    <circle cx="215" cy="205" r="62" fill="url(#glow)" opacity=".5"/>
+    <g fill="#0f5e45">
+      <polygon points="215,150 190,190 240,190"/>
+      <polygon points="215,170 182,218 248,218"/>
+      <polygon points="215,195 174,248 256,248"/>
+    </g>
+    <rect x="209" y="248" width="12" height="14" fill="#5a3322"/>
+    <polygon points="215,138 218,146 226,146 220,151 222,159 215,154 208,159 210,151 204,146 212,146" fill="#FFD98A"/>
+    <g>
+      <circle cx="205" cy="182" r="2.6" fill="#F0997B"/><circle cx="224" cy="186" r="2.6" fill="#FAC775"/>
+      <circle cx="196" cy="208" r="2.6" fill="#FAC775"/><circle cx="214" cy="212" r="2.6" fill="#E09AB0"/><circle cx="235" cy="206" r="2.6" fill="#F0997B"/>
+      <circle cx="188" cy="238" r="2.6" fill="#E09AB0"/><circle cx="208" cy="240" r="2.6" fill="#F0997B"/><circle cx="228" cy="236" r="2.6" fill="#FAC775"/><circle cx="246" cy="240" r="2.6" fill="#E09AB0"/>
+    </g>
+    <!-- Marktbuden -->
+    <g id="booth1">
+      <circle cx="52" cy="240" r="46" fill="url(#glow)" opacity=".45"/>
+      <rect x="12" y="222" width="80" height="44" fill="#6b3a2a"/>
+      <rect x="20" y="228" width="64" height="24" fill="url(#booth)"/>
+      <rect x="16" y="250" width="72" height="6" fill="#8E2C48"/>
+      <polygon points="4,224 52,196 100,224" fill="#8E2C48"/>
+      <polygon points="4,224 52,196 100,224 94,224 52,201 10,224" fill="#fff"/>
+      <path d="M20 228 q8 6 16 0 q8 6 16 0 q8 6 16 0 q8 6 16 0" fill="#fff" opacity=".9"/>
+    </g>
+    <g>
+      <circle cx="132" cy="244" r="42" fill="url(#glow)" opacity=".45"/>
+      <rect x="98" y="228" width="68" height="38" fill="#5c3424"/>
+      <rect x="105" y="233" width="54" height="20" fill="url(#booth)"/>
+      <rect x="102" y="251" width="60" height="6" fill="#1D9E75"/>
+      <polygon points="91,230 132,206 173,230" fill="#1D9E75"/>
+      <polygon points="91,230 132,206 173,230 167,230 132,211 97,230" fill="#fff"/>
+    </g>
+    <g>
+      <circle cx="300" cy="244" r="42" fill="url(#glow)" opacity=".45"/>
+      <rect x="266" y="228" width="68" height="38" fill="#5c3424"/>
+      <rect x="273" y="233" width="54" height="20" fill="url(#booth)"/>
+      <rect x="270" y="251" width="60" height="6" fill="#D85A30"/>
+      <polygon points="259,230 300,206 341,230" fill="#D85A30"/>
+      <polygon points="259,230 300,206 341,230 335,230 300,211 265,230" fill="#fff"/>
+    </g>
+    <g>
+      <circle cx="380" cy="240" r="46" fill="url(#glow)" opacity=".45"/>
+      <rect x="340" y="222" width="80" height="44" fill="#6b3a2a"/>
+      <rect x="348" y="228" width="64" height="24" fill="url(#booth)"/>
+      <rect x="344" y="250" width="72" height="6" fill="#534AB7"/>
+      <polygon points="332,224 380,196 428,224" fill="#534AB7"/>
+      <polygon points="332,224 380,196 428,224 422,224 380,201 338,224" fill="#fff"/>
+      <path d="M348 228 q8 6 16 0 q8 6 16 0 q8 6 16 0 q8 6 16 0" fill="#fff" opacity=".9"/>
+    </g>
+    <!-- Schnee am Boden -->
+    <path d="M0 264 Q60 256 120 263 T240 262 T360 261 T430 263 V300 H0 Z" fill="#EEEDFE"/>
+    <path d="M0 276 Q90 268 200 275 T430 272 V300 H0 Z" fill="#fff"/>
+  </symbol>
+</svg>
+
+<div class="backdrop" aria-hidden="true"><svg preserveAspectRatio="xMidYMax slice"><use href="#market"/></svg><div class="snow"></div></div>
+
+<div class="login" id="login" hidden>
+  <svg class="scene" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><use href="#market"/></svg>
+  <div class="snow" style="position:fixed;"></div>
+  <form class="login-card" id="login-form" novalidate>
+    <div class="mascot"><svg class="flag" viewBox="0 0 60 40" role="img" aria-label="Flagge von Straßburg"><rect width="60" height="40" fill="#fff"/><polygon points="0,0 13,0 60,31 60,40 47,40 0,9" fill="#D52B1E"/></svg></div>
+    <h1>Ausflug nach Straßburg</h1>
+    <p class="lead">07.–09. Dezember 2026 · Bitte melde dich an</p>
+    <div class="login-err" id="login-err" hidden>Benutzername oder Passwort stimmt nicht. Die Zugangsdaten stehen in der Einladung zur Reise.</div>
+    <div class="field"><label for="login-user">Benutzername</label><input id="login-user" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+    <div class="field"><label for="login-pass">Passwort</label><input id="login-pass" type="password" autocomplete="current-password" required></div>
+    <button class="btn" type="submit">Anmelden</button>
+    <p class="login-hint">Ein gemeinsamer Zugang für alle Teilnehmer. Du findest ihn in der Einladung.</p>
+    <p class="legal"><a href="https://ausflug-programm.de/impressum.html" target="_blank" rel="noopener">Impressum</a> · <a href="https://ausflug-programm.de/datenschutz.html" target="_blank" rel="noopener">Datenschutz</a></p>
+  </form>
+</div>
+
+<div class="app">
+
+<!-- START -->
+<div class="screen active" id="s-home">
+  <div class="scroll">
+    <div class="hero">
+      <span class="demo-tag" style="background:rgba(255,255,255,.2);color:#fff;border-color:transparent;">Gruppenreise</span>
+      <div class="mascot"><svg class="flag" viewBox="0 0 60 40" role="img" aria-label="Flagge von Straßburg"><rect width="60" height="40" fill="#fff"/><polygon points="0,0 13,0 60,31 60,40 47,40 0,9" fill="#D52B1E"/></svg></div>
+      <h1>Ausflug nach Straßburg</h1>
+      <p>3 Tage Altstadt, Münster und Weihnachtsmarkt im Elsass</p>
+      <div class="chips">
+        <span class="chip">📅 07.12. – 09.12.2026</span>
+        <span class="chip">🌙 2 Nächte</span>
+        <span class="chip">🚄 Zug</span>
+      </div>
+    </div>
+    <div class="pad">
+      <div class="section-label">Was möchtest du sehen?</div>
+      <div class="menu-grid">
+        <button class="menu-card mc-purple" onclick="nav('programm')"><div class="ci">🗓️</div><h3>Reiseprogramm</h3><p id="menu-prog">3 Tage, alle Stationen</p></button>
+        <button class="menu-card mc-teal" onclick="nav('packliste')"><div class="ci">🎒</div><h3>Packliste</h3><p>Winterfest fürs Elsass</p></button>
+        <button class="menu-card mc-coral" onclick="nav('quiz')"><div class="ci">🎮</div><h3>Straßburg-Quiz</h3><p>Teste dein Wissen im Zug</p></button>
+        <button class="menu-card mc-amber" onclick="nav('infos')"><div class="ci">ℹ️</div><h3>Infos</h3><p>Hotel, Treffpunkt &amp; Französisch</p></button>
+      </div>
+
+      <div class="section-label">Countdown bis zur Abfahrt</div>
+      <div class="cd" id="cd">
+        <div class="cd-grid">
+          <div class="cd-box"><b id="cd-d">–</b><span>Tage</span></div>
+          <div class="cd-box"><b id="cd-h">–</b><span>Stunden</span></div>
+          <div class="cd-box"><b id="cd-m">–</b><span>Minuten</span></div>
+          <div class="cd-box"><b id="cd-s">–</b><span>Sekunden</span></div>
+        </div>
+        <p class="cd-note" id="cd-note">🚄 Abfahrt Mo, 7. Dezember 2026 um 08:30 Uhr ab Frankfurt Hbf</p>
+      </div>
+    </div>
+  </div>
+  <nav class="tabbar" data-tabs></nav>
+</div>
+
+<!-- PROGRAMM -->
+<div class="screen" id="s-programm">
+  <div class="topbar">
+    <div class="topbar-row"><button class="back" onclick="nav('home')" aria-label="Zurück">←</button><h1>Reiseprogramm</h1></div>
+    <div class="sub">07.–09. Dezember 2026 · Tippe auf eine Station für Details</div>
+  </div>
+  <div class="day-bar">
+    <div class="pills" id="prog-days"></div>
+    <div class="day-title" id="day-title"></div>
+  </div>
+  <div class="scroll" id="prog-scroll"><div class="tl" id="timeline"></div></div>
+  <nav class="tabbar" data-tabs></nav>
+</div>
+
+<!-- PACKLISTE -->
+<div class="screen" id="s-packliste">
+  <div class="topbar">
+    <div class="topbar-row"><button class="back" onclick="nav('home')" aria-label="Zurück">←</button><h1>Packliste</h1></div>
+    <div class="sub" id="pack-count">0 von 0 eingepackt</div>
+    <div class="progress-bg" style="background:rgba(255,255,255,.25);"><div class="progress-fill" id="pack-prog" style="width:0%"></div></div>
+  </div>
+  <div class="scroll"><div class="pad" id="pack-list"></div></div>
+  <nav class="tabbar" data-tabs></nav>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="s-quiz">
+  <div class="topbar"><div class="topbar-row"><button class="back" onclick="nav('home')" aria-label="Zurück">←</button><h1>Straßburg-Quiz</h1></div></div>
+  <div class="scroll">
+    <div class="pad">
+      <div id="qgame">
+        <div class="q-score-row"><span class="q-score" id="q-score">Punkte: 0</span><span class="q-num" id="q-num"></span></div>
+        <div class="progress-bg"><div class="progress-fill" id="q-prog"></div></div>
+        <div class="q-card"><div class="q-emoji" id="q-emoji">❓</div><div class="q-text" id="q-text"></div></div>
+        <div class="ans-grid" id="ans-grid"></div>
+        <div class="q-explain" id="q-explain" hidden></div>
+        <button class="btn" id="q-next" onclick="nextQ()" hidden>Nächste Frage →</button>
+      </div>
+      <div id="qresult" class="q-result" hidden>
+        <div class="big" id="r-emoji">🏆</div>
+        <h2 id="r-title">Super gemacht!</h2>
+        <p id="r-score"></p>
+        <button class="btn" onclick="startQuiz()">Nochmal spielen 🔄</button>
+      </div>
+    </div>
+  </div>
+  <nav class="tabbar" data-tabs></nav>
+</div>
+
+<!-- INFOS -->
+<div class="screen" id="s-infos">
+  <div class="topbar"><div class="topbar-row"><button class="back" onclick="nav('home')" aria-label="Zurück">←</button><h1>Infos</h1></div></div>
+  <div class="scroll">
+    <div class="pad">
+      <div class="section-label">Das Wichtigste <span class="demo-tag" style="margin-left:6px;">Beispiel</span></div>
+      <div class="card">
+        <div class="info-row"><div class="ie">📍</div><div><h4>Treffpunkt</h4><p>Frankfurt (Main) Hbf, vor dem Reisezentrum, Mo 07.12. um 08:15 Uhr</p></div></div>
+        <div class="info-row"><div class="ie">🏨</div><div><h4>Unterkunft</h4><p>Hotel in der Altstadt (Grande Île), Doppelzimmer mit Frühstück – Name folgt</p></div></div>
+        <div class="info-row"><div class="ie">🎫</div><div><h4>Tickets</h4><p>Zugtickets, Bootsfahrt und Münster-Plattform bringt die Reiseleitung mit</p></div></div>
+        <div class="info-row"><div class="ie">💶</div><div><h4>Kosten</h4><p>Beispiel: 289 € p. P. inkl. Zug, 2 Nächte mit Frühstück und Programm; Abendessen auf eigene Rechnung</p></div></div>
+        <div class="info-row"><div class="ie">🌡️</div><div><h4>Wetter im Dezember</h4><p>Meist um 0 bis 6 °C, früh dunkel – warme Kleidung einpacken</p></div></div>
+        <div class="info-row"><div class="ie">📞</div><div><h4>Reiseleitung</h4><p>Name und Handynummer werden vor der Reise ergänzt</p></div></div>
+      </div>
+
+      <div class="section-label">Französisch für unterwegs</div>
+      <div class="card">
+        <div class="phrase"><b>Bonjour !</b><span>Guten Tag!</span></div>
+        <div class="phrase"><b>Merci beaucoup</b><span>Vielen Dank</span></div>
+        <div class="phrase"><b>L'addition, s'il vous plaît</b><span>Die Rechnung, bitte</span></div>
+        <div class="phrase"><b>Un vin chaud, s'il vous plaît</b><span>Einen Glühwein, bitte</span></div>
+        <div class="phrase"><b>Où est … ?</b><span>Wo ist …?</span></div>
+      </div>
+
+      <div class="section-label">Häufige Fragen</div>
+      <details class="faq"><summary>Brauche ich einen Reisepass?</summary><p>Nein. Personalausweis oder Reisepass genügt, beides muss gültig sein.</p></details>
+      <details class="faq"><summary>Welche Währung gilt?</summary><p>Wie in Deutschland der Euro. Auf dem Weihnachtsmarkt ist etwas Bargeld praktisch.</p></details>
+      <details class="faq"><summary>Kostet mein Handy im Ausland extra?</summary><p>Innerhalb der EU telefonierst und surfst du in der Regel zu deinem normalen Tarif.</p></details>
+      <details class="faq"><summary>Spricht man dort Deutsch?</summary><p>Amtssprache ist Französisch, aber in Hotels, Restaurants und auf dem Markt kommt man oft auch mit Deutsch weiter.</p></details>
+      <details class="faq"><summary>Was ist, wenn ich mich verlaufe?</summary><p>Die Altstadt ist klein und von der Ill umflossen. Ruf die Reiseleitung an oder geh zum Münster – dort treffen wir uns im Notfall.</p></details>
+      <button class="logout" onclick="logout()">Abmelden</button>
+      <p class="legal"><a href="https://ausflug-programm.de/impressum.html" target="_blank" rel="noopener">Impressum</a> · <a href="https://ausflug-programm.de/datenschutz.html" target="_blank" rel="noopener">Datenschutz</a></p>
+    </div>
+  </div>
+  <nav class="tabbar" data-tabs></nav>
+</div>
+
+</div>
+
+<!-- STATION DETAIL -->
+<div class="overlay" id="ov-stop" onclick="if(event.target===this)closeStop()">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="st-title">
+    <div class="handle"></div>
+    <div class="sh-head">
+      <div class="ic" id="st-icon"></div>
+      <span class="time" id="st-time"></span>
+      <h2 id="st-title"></h2>
+    </div>
+    <div class="fact-row"><h4>Was passiert?</h4><p id="st-text"></p></div>
+    <div class="fact-row"><h4>Gut zu wissen</h4><ul id="st-tips"></ul></div>
+    <div class="fact-row"><h4>Wo?</h4><p id="st-where"></p></div>
+    <button class="btn" onclick="closeStop()">Schließen ✓</button>
+  </div>
+</div>
+
+<script>
+var DAYS = [
+  {short:'Tag 1',date:'Mo 07.12.',title:'Montag, 7. Dezember – Anreise & Altstadt'},
+  {short:'Tag 2',date:'Di 08.12.',title:'Dienstag, 8. Dezember – Münster & Bootsfahrt'},
+  {short:'Tag 3',date:'Mi 09.12.',title:'Mittwoch, 9. Dezember – Europaviertel & Heimreise'}
+];
+
+var STOPS = [
+  // TAG 1
+  {d:0,t:'08:30',icon:'🚄',bg:'#EEEDFE',title:'Abfahrt in Frankfurt',short:'Mit dem Zug direkt nach Straßburg.',
+   text:'Wir fahren gemeinsam mit dem Zug vom Frankfurter Hauptbahnhof nach Straßburg. Die Fahrt dauert etwa zwei Stunden.',
+   tips:['Treffpunkt 08:15 Uhr vor dem Reisezentrum','Ausweis griffbereit halten'],where:'Frankfurt (Main) Hauptbahnhof'},
+  {d:0,t:'10:45',icon:'🧳',bg:'#E1F5EE',title:'Ankunft & Hotel',short:'Ankunft in Straßburg, Gepäck ins Hotel.',
+   text:'Ankunft am Bahnhof Strasbourg. Kurzer Fußweg oder Tram zum Hotel, wo wir das Gepäck abgeben.',
+   tips:['Zimmer sind meist erst ab 15 Uhr bezugsfertig','Wertsachen im Handgepäck behalten'],where:'Gare de Strasbourg → Hotel in der Altstadt'},
+  {d:0,t:'11:30',icon:'🚶',bg:'#FAEEDA',title:'Stadtrundgang',short:'Erster Spaziergang über die Grande Île.',
+   text:'Geführter Rundgang über die Grande Île, die Altstadtinsel zwischen den Armen der Ill. Sie gehört zum UNESCO-Welterbe.',
+   tips:['Bequeme Schuhe – viel Kopfsteinpflaster','Dauer etwa 1,5 Stunden'],where:'Place Kléber und Umgebung'},
+  {d:0,t:'13:00',icon:'🍕',bg:'#FAECE7',title:'Mittagessen',short:'Flammkuchen in einer Winstub.',
+   text:'Gemeinsames Mittagessen in einer typisch elsässischen Weinstube (Winstub) mit Flammkuchen, auf Französisch „tarte flambée“.',
+   tips:['Vegetarische Flammkuchen sind möglich'],where:'Winstub in der Altstadt'},
+  {d:0,t:'15:00',icon:'🏘️',bg:'#E1F5EE',title:'Petite France',short:'Fachwerkhäuser, Kanäle und die Barrage Vauban.',
+   text:'Spaziergang durch das malerische Gerberviertel Petite France mit Fachwerkhäusern und Kanälen. Von der Terrasse der Barrage Vauban hat man einen schönen Blick über die Altstadt.',
+   tips:['Fotospot: die Ponts Couverts','Terrasse der Barrage Vauban ist kostenlos'],where:'Quartier Petite France'},
+  {d:0,t:'17:30',icon:'🎄',bg:'#F8E6EC',title:'Weihnachtsmarkt',short:'Der Christkindelsmärik am Abend.',
+   text:'Freie Zeit auf dem Christkindelsmärik, einem der ältesten Weihnachtsmärkte Europas. Am Abend leuchtet die ganze Altstadt.',
+   tips:['Vin chaud (Glühwein) und Bredele (Plätzchen) probieren','Auf Taschendiebe achten'],where:'Place Broglie & Place de la Cathédrale'},
+  {d:0,t:'19:30',icon:'🍽️',bg:'#EEEDFE',title:'Abendessen',short:'Gemeinsames Essen, danach frei.',
+   text:'Gemeinsames Abendessen in einem Restaurant in der Altstadt. Danach ist der Abend frei.',
+   tips:['Auf eigene Rechnung (Beispiel)'],where:'Restaurant in der Altstadt'},
+  // TAG 2
+  {d:1,t:'08:30',icon:'🥐',bg:'#FAEEDA',title:'Frühstück',short:'Frühstück im Hotel.',
+   text:'Frühstück im Hotel. Um 09:45 Uhr treffen wir uns in der Lobby.',
+   tips:['Croissant probieren!'],where:'Hotel'},
+  {d:1,t:'10:00',icon:'⛪',bg:'#EEEDFE',title:'Straßburger Münster',short:'Besichtigung und Aufstieg zur Plattform.',
+   text:'Besichtigung des Liebfrauenmünsters (Cathédrale Notre-Dame). Wer mag, steigt über rund 330 Stufen auf die Aussichtsplattform.',
+   tips:['Aufstieg ist freiwillig','Bei klarer Sicht sieht man bis zum Schwarzwald'],where:'Place de la Cathédrale'},
+  {d:1,t:'12:00',icon:'🕰️',bg:'#E1F5EE',title:'Astronomische Uhr',short:'Der Apostelumzug um 12:30 Uhr.',
+   text:'Im Münster steht die berühmte Astronomische Uhr. Täglich um 12:30 Uhr ziehen die zwölf Apostel an Christus vorbei.',
+   tips:['Eigenes Ticket nötig – bringt die Reiseleitung mit','Früh da sein, es wird voll'],where:'Im Münster, Südquerhaus'},
+  {d:1,t:'13:30',icon:'🥨',bg:'#FAECE7',title:'Mittagspause',short:'Freie Mittagspause.',
+   text:'Mittagspause zur freien Verfügung. Tipp: Choucroute (Sauerkraut mit Fleisch) oder eine Brezel vom Markt.',
+   tips:['Treffpunkt 14:50 Uhr an der Bootsanlegestelle'],where:'Altstadt'},
+  {d:1,t:'15:00',icon:'⛴️',bg:'#E1F5EE',title:'Bootsfahrt auf der Ill',short:'Rundfahrt durch die Kanäle.',
+   text:'Rundfahrt mit dem Boot auf der Ill durch Petite France bis ins Europaviertel. Unterwegs gibt es einen Audioguide auf Deutsch.',
+   tips:['Dauer etwa 70 Minuten','Boote sind im Winter überdacht'],where:'Anlegestelle am Palais Rohan'},
+  {d:1,t:'16:30',icon:'🛍️',bg:'#F8E6EC',title:'Freizeit',short:'Weihnachtsmärkte und Bummeln.',
+   text:'Zeit zur freien Verfügung: Weihnachtsmärkte entdecken, Bredele kaufen oder ein Museum besuchen.',
+   tips:['Stofftasche für Einkäufe mitnehmen'],where:'Altstadt'},
+  {d:1,t:'19:30',icon:'🍷',bg:'#EEEDFE',title:'Elsässischer Abend',short:'Gemeinsames Abendessen.',
+   text:'Gemeinsames Abendessen mit elsässischen Spezialitäten, zum Beispiel Baeckeoffe oder Choucroute.',
+   tips:['Bitte Allergien vorher melden'],where:'Winstub in der Altstadt'},
+  // TAG 3
+  {d:2,t:'08:30',icon:'🧳',bg:'#FAEEDA',title:'Frühstück & Check-out',short:'Koffer packen, Zimmer räumen.',
+   text:'Frühstück im Hotel, danach Check-out. Das Gepäck bleibt bis zur Abreise im Hotel.',
+   tips:['Zimmer bis 10:00 Uhr räumen','Nichts im Safe vergessen'],where:'Hotel'},
+  {d:2,t:'10:15',icon:'🇪🇺',bg:'#EEEDFE',title:'Europaviertel',short:'Europäisches Parlament und Europarat.',
+   text:'Mit der Tram ins Europaviertel. Wir sehen das Europäische Parlament und den Europarat von außen.',
+   tips:['Tram-Tickets bringt die Reiseleitung mit'],where:'Quartier Européen'},
+  {d:2,t:'12:30',icon:'🍴',bg:'#FAECE7',title:'Mittagessen',short:'Letztes Mittagessen in Straßburg.',
+   text:'Freie Mittagspause in der Altstadt und letzte Gelegenheit für Mitbringsel.',
+   tips:['Treffpunkt 14:15 Uhr am Hotel'],where:'Altstadt'},
+  {d:2,t:'15:00',icon:'🚄',bg:'#E1F5EE',title:'Rückfahrt',short:'Mit dem Zug zurück nach Frankfurt.',
+   text:'Gepäck abholen und gemeinsam zum Bahnhof. Rückfahrt mit dem Zug nach Frankfurt.',
+   tips:['Pünktlich am Bahnhof sein','Zugtickets bleiben bei der Reiseleitung'],where:'Gare de Strasbourg'},
+  {d:2,t:'17:00',icon:'🏁',bg:'#F8E6EC',title:'Ankunft in Frankfurt',short:'Ende der Reise.',
+   text:'Ankunft am Frankfurter Hauptbahnhof. Ende der Reise.',
+   tips:['Fotos teilen wir nach der Reise in der Gruppe'],where:'Frankfurt (Main) Hauptbahnhof'}
+];
+STOPS.forEach(function(s){var p=s.t.split(':');s.m=(+p[0])*60+(+p[1]);});
+
+var PACK = [
+  {g:'Dokumente & Geld',items:[['🪪','Personalausweis oder Reisepass','Muss gültig sein'],['💳','Krankenversicherungskarte','Gilt auch in Frankreich'],['💶','Etwas Bargeld','Für den Weihnachtsmarkt']]},
+  {g:'Kleidung',items:[['🧥','Warme Winterjacke','Um 0 °C im Dezember'],['🧣','Mütze, Schal & Handschuhe',''],['👟','Bequeme, feste Schuhe','Viel Kopfsteinpflaster'],['🌂','Regenschirm','']]},
+  {g:'Sonstiges',items:[['📱','Handy & Ladekabel','Powerbank nicht vergessen'],['💊','Eigene Medikamente',''],['🛍️','Stofftasche','Für Bredele & Mitbringsel']]}
+];
+
+var QUESTIONS = [
+  {e:'⛪',q:'Wie hoch ist der Turm des Straßburger Münsters ungefähr?',a:['92 Meter','142 Meter','212 Meter','315 Meter'],c:1,x:'Mit etwa 142 Metern war das Münster über 200 Jahre lang das höchste Gebäude der Welt.'},
+  {e:'🕰️',q:'Was passiert täglich um 12:30 Uhr an der Astronomischen Uhr?',a:['Ein Kanonenschuss','Die Apostel ziehen vorbei','Ein Feuerwerk','Die Uhr wird gestellt'],c:1,x:'Beim Apostelumzug ziehen die zwölf Apostel an Christus vorbei, und ein Hahn kräht.'},
+  {e:'🎄',q:'Wie heißt der Straßburger Weihnachtsmarkt auf Elsässisch?',a:['Christkindelsmärik','Wiehnachtsgass','Adventsplätzle','Kerzenmärik'],c:0,x:'Den Christkindelsmärik gibt es seit 1570 – er zählt zu den ältesten Weihnachtsmärkten Europas.'},
+  {e:'🌊',q:'Welcher Fluss umfließt die Straßburger Altstadt?',a:['Rhein','Mosel','Ill','Saar'],c:2,x:'Die Ill umschließt die Grande Île. Der Rhein fließt einige Kilometer östlich der Altstadt.'},
+  {e:'🏘️',q:'Wie heißt das Viertel mit den Fachwerkhäusern an den Kanälen?',a:['Petite France','Petite Venise','Quartier Latin','Vieux Port'],c:0,x:'Petite France war früher das Viertel der Gerber, Müller und Fischer.'},
+  {e:'🇪🇺',q:'Welche EU-Institution hat ihren offiziellen Sitz in Straßburg?',a:['Europäische Zentralbank','Europäisches Parlament','EU-Kommission','Europäischer Gerichtshof'],c:1,x:'Das Europäische Parlament tagt in Straßburg. Die EZB sitzt übrigens in Frankfurt.'},
+  {e:'🍪',q:'Was sind „Bredele“?',a:['Elsässische Weihnachtsplätzchen','Kleine Brezeln','Glühwein mit Zimt','Fachwerkbalken'],c:0,x:'Bredele sind kleine Plätzchen, die im Elsass zur Adventszeit in vielen Sorten gebacken werden.'}
+];
+
+var TABS = [['home','🏠','Start'],['programm','🗓️','Programm'],['packliste','🎒','Packliste'],['quiz','🎮','Quiz']];
+var simDay = 0, simMinutes = 480, progDay = 0;
+
+function fmt(m){var h=Math.floor(m/60),mi=m%60;return (h<10?'0':'')+h+':'+(mi<10?'0':'')+mi;}
+
+function buildTabs(){
+  document.querySelectorAll('[data-tabs]').forEach(function(bar){
+    var screen = bar.closest('.screen').id.replace('s-','');
+    bar.innerHTML = TABS.map(function(t){
+      return '<button class="tab'+(t[0]===screen?' active':'')+'" onclick="nav(\''+t[0]+'\')"><span class="ti">'+t[1]+'</span><span>'+t[2]+'</span></button>';
+    }).join('');
+  });
+}
+
+function nav(s){
+  document.querySelectorAll('.screen').forEach(function(x){x.classList.remove('active');});
+  document.getElementById('s-'+s).classList.add('active');
+  if(s==='quiz' && !quizStarted) startQuiz();
+}
+function openProgramForSim(){ setProgDay(simDay); nav('programm'); }
+
+/* DAY PILLS */
+function buildDayPills(id, onPick){
+  var el=document.getElementById(id);
+  el.innerHTML=DAYS.map(function(d,i){return '<button class="pill" data-i="'+i+'">'+d.short+'<small>'+d.date+'</small></button>';}).join('');
+  el.querySelectorAll('.pill').forEach(function(b){b.onclick=function(){onPick(+b.dataset.i);};});
+}
+function markPills(id, active){
+  document.querySelectorAll('#'+id+' .pill').forEach(function(b,i){b.classList.toggle('active',i===active);b.setAttribute('aria-pressed',i===active);});
+}
+
+/* STATUS */
+function before(a,b){return a.d<b.d || (a.d===b.d && a.m<=b.m);}
+function currentIndex(){
+  var now={d:simDay,m:simMinutes},idx=-1;
+  STOPS.forEach(function(s,i){ if(before(s,now)) idx=i; });
+  return idx;
+}
+function updateStatus(){
+  var i=currentIndex(), last=STOPS.length-1, s, label, text;
+  if(i<0){ s=STOPS[0]; label='Als Nächstes · in '+(STOPS[0].m-simMinutes)+' min'; text=s.short; }
+  else if(i===last){ s=STOPS[i]; label='Reise beendet'; text='Willkommen zurück in Frankfurt!'; }
+  else {
+    s=STOPS[i]; var n=STOPS[i+1];
+    label='Jetzt · '+DAYS[s.d].date+' seit '+s.t+' Uhr';
+    text = n.d===s.d ? 'Danach um '+n.t+': '+n.title : 'Morgen um '+n.t+': '+n.title;
+  }
+  renderTimeline();
+}
+
+/* TIMELINE */
+function setProgDay(d){ progDay=d; markPills('prog-days',d); document.getElementById('day-title').textContent=DAYS[d].title; renderTimeline(); document.getElementById('prog-scroll').scrollTop=0; }
+function renderTimeline(){
+  var cur=currentIndex(), last=STOPS.length-1, tl=document.getElementById('timeline');
+  var html='';
+  STOPS.forEach(function(s,i){
+    if(s.d!==progDay) return;
+    var cls = i<cur ? ' done' : (i===cur && i<last ? ' current' : '');
+    html+='<div class="tl-item tap'+cls+'" tabindex="0" role="button" data-i="'+i+'">'+
+      '<div class="tl-time">'+s.t+'</div><div class="tl-rail"><div class="tl-dot"></div></div>'+
+      '<div class="tl-card"><div class="tl-ic" style="background:'+s.bg+'">'+s.icon+'</div>'+
+      '<div style="min-width:0"><h3>'+s.title+(cls===' current'?'<span class="badge-now">Jetzt</span>':'')+'</h3><p>'+s.short+'</p></div><div class="arrow">›</div></div></div>';
+  });
+  tl.innerHTML=html;
+  tl.querySelectorAll('.tl-item').forEach(function(el){
+    el.onclick=function(){openStop(+el.dataset.i);};
+    el.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openStop(+el.dataset.i);}};
+  });
+}
+function openStop(i){
+  var s=STOPS[i];
+  document.getElementById('st-icon').textContent=s.icon;
+  document.getElementById('st-time').textContent=DAYS[s.d].date+' · '+s.t+' Uhr';
+  document.getElementById('st-title').textContent=s.title;
+  document.getElementById('st-text').textContent=s.text;
+  document.getElementById('st-where').textContent=s.where;
+  document.getElementById('st-tips').innerHTML=s.tips.map(function(t){return '<li>'+t+'</li>';}).join('');
+  document.getElementById('ov-stop').classList.add('show');
+}
+function closeStop(){document.getElementById('ov-stop').classList.remove('show');}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeStop();});
+
+/* PACKLISTE */
+var packed={};
+try{packed=JSON.parse(localStorage.getItem('strasbourg-pack')||'{}');}catch(e){packed={};}
+function buildPack(){
+  var html='';
+  PACK.forEach(function(g,gi){
+    html+='<div class="pack-group"><div class="section-label">'+g.g+'</div>';
+    g.items.forEach(function(it,ii){
+      var id=gi+'-'+ii;
+      html+='<button class="pack-item'+(packed[id]?' checked':'')+'" data-id="'+id+'" aria-pressed="'+(!!packed[id])+'">'+
+        '<span class="pack-box">'+(packed[id]?'✓':'')+'</span><span class="pe">'+it[0]+'</span>'+
+        '<span class="pt">'+it[1]+(it[2]?'<small>'+it[2]+'</small>':'')+'</span></button>';
+    });
+    html+='</div>';
+  });
+  var list=document.getElementById('pack-list');
+  list.innerHTML=html;
+  list.querySelectorAll('.pack-item').forEach(function(b){
+    b.onclick=function(){
+      var id=b.dataset.id; packed[id]=!packed[id];
+      try{localStorage.setItem('strasbourg-pack',JSON.stringify(packed));}catch(e){}
+      buildPack();
+    };
+  });
+  var total=0,done=0;
+  PACK.forEach(function(g,gi){g.items.forEach(function(it,ii){total++;if(packed[gi+'-'+ii])done++;});});
+  document.getElementById('pack-count').textContent=done+' von '+total+' eingepackt'+(done===total?' – bereit! 🎉':'');
+  document.getElementById('pack-prog').style.width=(done/total*100)+'%';
+}
+
+/* QUIZ */
+var qList=[],qIdx=0,qScore=0,qDone=false,quizStarted=false;
+function startQuiz(){
+  quizStarted=true;
+  qList=QUESTIONS.slice().sort(function(){return Math.random()-.5;});
+  qIdx=0;qScore=0;
+  document.getElementById('qresult').hidden=true;
+  document.getElementById('qgame').hidden=false;
+  showQ();
+}
+function showQ(){
+  qDone=false;
+  var q=qList[qIdx];
+  document.getElementById('q-emoji').textContent=q.e;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-score').textContent='Punkte: '+qScore;
+  document.getElementById('q-num').textContent='Frage '+(qIdx+1)+' / '+qList.length;
+  document.getElementById('q-prog').style.width=((qIdx+1)/qList.length*100)+'%';
+  document.getElementById('q-explain').hidden=true;
+  document.getElementById('q-next').hidden=true;
+  var L=['A','B','C','D'],g=document.getElementById('ans-grid');
+  g.innerHTML='';
+  q.a.forEach(function(a,i){
+    var b=document.createElement('button');
+    b.className='ans-btn';
+    b.innerHTML='<span class="ans-letter">'+L[i]+'</span>'+a;
+    b.onclick=function(){checkQ(i);};
+    g.appendChild(b);
+  });
+}
+function checkQ(i){
+  if(qDone)return; qDone=true;
+  var q=qList[qIdx];
+  document.querySelectorAll('.ans-btn').forEach(function(b,k){
+    if(k===q.c)b.classList.add('correct'); else if(k===i)b.classList.add('wrong');
+    b.disabled=true;
+  });
+  if(i===q.c)qScore++;
+  document.getElementById('q-score').textContent='Punkte: '+qScore;
+  var ex=document.getElementById('q-explain'); ex.textContent=(i===q.c?'Richtig! ':'Nicht ganz. ')+q.x; ex.hidden=false;
+  var nb=document.getElementById('q-next'); nb.textContent=qIdx===qList.length-1?'Ergebnis ansehen →':'Nächste Frage →'; nb.hidden=false;
+}
+function nextQ(){
+  qIdx++;
+  if(qIdx>=qList.length){
+    document.getElementById('qgame').hidden=true;
+    document.getElementById('qresult').hidden=false;
+    var p=qScore/qList.length;
+    document.getElementById('r-emoji').textContent=p>=.8?'🏆':p>=.5?'⭐':'💪';
+    document.getElementById('r-title').textContent=p>=.8?'Straßburg-Profi!':p>=.5?'Gut gemacht!':'Weiter üben!';
+    document.getElementById('r-score').textContent=qScore+' von '+qList.length+' richtig';
+  } else showQ();
+}
+
+/* LOGIN – ein gemeinsamer Zugang für alle Teilnehmer */
+var LOGIN_HASHES=[
+  '6fe70860fac52bb2a4e566d86442b6ebcc08a875e1ef54dddca3e97927515abf', // Teilnehmer
+  '31f014b53e5861c8b28a8707a1d6a2a2737ce2c22fd671884173498510a063f0'  // Test-Zugang
+];
+var LOGIN_KEY='strasbourg-login';
+function sha256(text){
+  return crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)).then(function(buf){
+    return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');
+  });
+}
+function isLoggedIn(){try{return LOGIN_HASHES.indexOf(localStorage.getItem(LOGIN_KEY))>=0;}catch(e){return false;}}
+function showLogin(){document.getElementById('login').hidden=false;setTimeout(function(){document.getElementById('login-user').focus();},50);}
+function logout(){
+  try{localStorage.removeItem(LOGIN_KEY);}catch(e){}
+  document.getElementById('login-pass').value='';
+  nav('home');showLogin();
+}
+document.getElementById('login-form').addEventListener('submit',function(e){
+  e.preventDefault();
+  var u=document.getElementById('login-user').value.trim().toLowerCase();
+  var p=document.getElementById('login-pass').value;
+  sha256(u+':'+p).then(function(h){
+    if(LOGIN_HASHES.indexOf(h)>=0){
+      try{localStorage.setItem(LOGIN_KEY,h);}catch(err){}
+      document.getElementById('login-err').hidden=true;
+      document.getElementById('login').hidden=true;
+    } else {
+      var card=document.getElementById('login-form');
+      document.getElementById('login-err').hidden=false;
+      card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+      document.getElementById('login-pass').value='';
+      document.getElementById('login-pass').focus();
+    }
+  });
+});
+if(!isLoggedIn()) showLogin();
+
+/* INIT */
+document.querySelectorAll('.hero,.topbar').forEach(function(el){
+  el.insertAdjacentHTML('afterbegin','<svg class="scene" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><use href="#market"/></svg><div class="snow"></div>');
+});
+var DEPART = new Date('2026-12-07T08:30:00+01:00').getTime();
+var RETURN = new Date('2026-12-09T17:00:00+01:00').getTime();
+function pad2(n){return (n<10?'0':'')+n;}
+function tickCountdown(){
+  var now=Date.now(), diff=DEPART-now;
+  if(diff<=0){
+    var cd=document.getElementById('cd');
+    cd.classList.add('cd-done');
+    cd.innerHTML = now<RETURN
+      ? '<div class="cd-big">🎄 Gute Reise!</div><p class="cd-note">Wir sind unterwegs in Straßburg.</p>'
+      : '<div class="cd-big">🏁 Schön war\'s!</div><p class="cd-note">Danke fürs Mitfahren nach Straßburg.</p>';
+    return;
+  }
+  var s=Math.floor(diff/1000);
+  document.getElementById('cd-d').textContent=Math.floor(s/86400);
+  document.getElementById('cd-h').textContent=pad2(Math.floor(s%86400/3600));
+  document.getElementById('cd-m').textContent=pad2(Math.floor(s%3600/60));
+  document.getElementById('cd-s').textContent=pad2(s%60);
+  setTimeout(tickCountdown,1000);
+}
+tickCountdown();
+document.getElementById('menu-prog').textContent='3 Tage, '+STOPS.length+' Stationen';
+buildTabs();
+buildDayPills('prog-days',setProgDay);
+setProgDay(0);
+buildPack();
+updateStatus();
+</script>
+</body>
+</html>
